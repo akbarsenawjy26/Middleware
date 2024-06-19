@@ -27,7 +27,7 @@ class ModbusModel {
       return data.data;
     } catch (error) {
       console.log("Error Read Register:", slaveId, JSON.stringify(error));
-      return null;
+      return Array(77).fill(0);
     }
   }
 }
