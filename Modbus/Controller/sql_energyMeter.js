@@ -62,7 +62,7 @@ const execute = async () => {
       await sleep(1000);
     }
   } catch (error) {
-    console.log("error execute:", error);
+    console.log("error execute SQL Energy Meter:", error);
   }
 };
 

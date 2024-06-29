@@ -1,7 +1,7 @@
 const ModbusRTU = require("modbus-serial");
 
 class ModbusModel {
-  constructor(ip) {
+  constructor(ip, id) {
     this.ip = ip;
     this.client = new ModbusRTU();
   }
@@ -12,7 +12,7 @@ class ModbusModel {
       console.log(`Connected to Modbus TCP at ${this.ip}`);
     } catch (err) {
       console.error(`Error connecting to Modbus TCP at ${this.ip}:`, err);
-      throw err;
+      // throw err;
     }
   }
 
@@ -21,13 +21,15 @@ class ModbusModel {
       if (!this.client.isOpen) {
         await this.connect();
       }
+      this.client.setTimeout(3000);
       this.client.setID(slaveId);
       const data = await this.client.readHoldingRegisters(startAddress, numRegisters);
-      console.log(slaveId, data);
+      console.log(slaveId, data.data);
       return data.data;
     } catch (error) {
-      console.log("Error Read Register:", slaveId, JSON.stringify(error));
-      return Array(77).fill(0);
+      console.log("Error Read Register:", slaveId);
+      // return Array(77).fill(0);
+      return null;
     }
   }
 }

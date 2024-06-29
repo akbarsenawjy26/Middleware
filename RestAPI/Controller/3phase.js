@@ -1,4 +1,6 @@
 const Data3phase = require("../Model/Influx/3phase");
+const HourlyData = require("../Model/SQL/hourlyData");
+const { Op, fn, col } = require("sequelize");
 
 const phaseData = async (req, res) => {
   const { slaveId } = req.params;
@@ -99,7 +101,56 @@ const phaseDataRange = async (req, res) => {
   }
 };
 
+const phaseSQL = async (req, res) => {
+  const { slaveId } = req.params;
+  const { startDate, endDate } = req.query;
+
+  if (!startDate || !endDate) {
+    return res
+      .status(400)
+      .json({ error: "startDate and endDate are required" });
+  }
+
+  try {
+    const data = await HourlyData.findAll({
+      attributes: [
+        "slaveID",
+        "createdAt",
+        "voltageLN1",
+        "voltageLN2",
+        "voltageLN3",
+        "voltageLL1",
+        "voltageLL2",
+        "voltageLL3",
+        "current1",
+        "current2",
+        "current3",
+      ],
+      where: {
+        slaveID: Number(slaveId),
+        createdAt: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+      order: [["createdAt", "DESC"]],
+    });
+
+    console.log("api:", data);
+    if (data.length === 0) {
+      return res.status(404).json({ message: "No data found" });
+    }
+
+    return res.status(200).json(data);
+  } catch (error) {
+    console.error("Error fetching hourly data:", error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while fetching data" });
+  }
+};
+
 module.exports = {
   phaseData,
   phaseDataRange,
+  phaseSQL,
 };

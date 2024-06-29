@@ -41,6 +41,7 @@ const dataKwhPeriodic = async (req, res) => {
       order: [["createdAt", "DESC"]],
     });
 
+    console.log("data kwh:", data);
     const result = [];
 
     for (let index = 0; index < data.length; index++) {

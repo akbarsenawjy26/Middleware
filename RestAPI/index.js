@@ -9,6 +9,8 @@ const router3phase = require("./Router/3phase");
 const overview = require("./Router/kwh");
 const phasePower = require("./Router/phasePower");
 const harmonic = require("./Router/harmonic");
+const aggregate = require("./Router/aggregate");
+// const cronList = require("./cron");
 
 app.use(cors());
 app.get("/", (req, res) => {
@@ -21,7 +23,9 @@ app.use("/api/3-phase", router3phase);
 app.use("/api/overview", overview);
 app.use("/api/phase-power", phasePower);
 app.use("/api/harmonic", harmonic);
+app.use("/api", aggregate);
 
 app.listen(port, () => {
   console.log(`Server berjalan di http://localhost:${port}`);
+  // cronList();
 });
